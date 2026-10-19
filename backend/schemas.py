@@ -231,6 +231,9 @@ class ReorderRecommendation(BaseModel):
     supplier_id: Optional[int]
     supplier_name: Optional[str]
     estimated_cost: float
+    stockout_risk: str
+    demand_basis: str
+    reason: str
 
 
 # ─────────────────────────────────────────────

@@ -126,11 +126,31 @@ def get_reorder_recommendations(db: Session) -> List[Dict]:
         if not product:
             continue
 
-        avg_daily = rp["predicted_demand"]
-        safety_stock = avg_daily * LEAD_TIME_DAYS * 0.5
-        reorder_point = avg_daily * LEAD_TIME_DAYS + safety_stock
-        target_stock = avg_daily * 30  # 30-day supply
-        recommended_qty = max(MIN_ORDER_QTY, int(target_stock - product.current_stock))
+       
+        if rp.get("forecast_demand" , 0) > 0:
+            demand_basis = "forecast"
+            avg_daily = rp["forecast_demand"]
+        elif rp.get("predicted_demand" , 0) > 0:
+            demand_basis = "historical"
+            avg_daily = rp{"predicted_demand"}
+    
+        else:
+    
+             demand_basis = "fallbackl"
+             avg_daily =1
+   
+        risk = rp{"risk_level"}
+
+        safety_stock =mavg_daily * LEAD_TIME_DAYS * 0.5
+        reorder_point = avg_daily * LEAD_TIME_DAYS + safety_stock 
+        target_stock = avg_daily * 30
+        recommend_qty max(MIN_ORDER_QTY , int(target_stock - product.current_stock))
+
+    reason = (
+    f"{{risk} Risk} Current stock is {product.current_stock}. "
+    f"Recoomending {recoomend_qty} units based on {demand_basis} demand."
+    )
+
 
         supplier_name = None
         if product.supplier:
